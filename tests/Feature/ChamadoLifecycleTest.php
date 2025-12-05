@@ -46,6 +46,8 @@ class ChamadoLifecycleTest extends TestCase
             'descricao_problema' => 'A impressora do nosso departamento não está a imprimir nada.',
             'local' => 'Sala 101',
             'prioridade' => 'Média',
+    'categoria_id' => 1, // Se for obrigatório
+    'departamento_id' => 1,
         ]);
         
         $response->assertRedirect(route('chamados.index'));
