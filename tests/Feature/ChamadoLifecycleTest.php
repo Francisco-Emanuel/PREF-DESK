@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Categoria;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -30,6 +31,8 @@ class ChamadoLifecycleTest extends TestCase
         // Cria um departamento
         $departamento = Departamento::create(['nome' => 'Financeiro', 'local' => 'Prédio Principal']);
 
+        $categoria = Categoria::create(['nome_amigavel' => 'Hardware', 'tipo_interno' => 'hardware']);
+        
         // Cria um utilizador comum (solicitante)
         $solicitante = User::factory()->create(['departamento_id' => $departamento->id]);
         $solicitante->assignRole('Usuário Comum');
