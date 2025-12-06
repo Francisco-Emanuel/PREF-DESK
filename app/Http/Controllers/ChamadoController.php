@@ -107,7 +107,11 @@ class ChamadoController extends Controller
 
     public function close(Chamado $chamado)
     {
+<<<<<<< HEAD
         $this->authorize('edit-chamados'); 
+=======
+        $this->authorize('close-chamados'); 
+>>>>>>> 9727f02baddf885204460d76892af0226823ae0a
         $this->chamadoService->fecharChamado($chamado, Auth::user());
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado fechado com sucesso!');
     }

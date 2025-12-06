@@ -26,7 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
         $roleComum = Role::firstOrCreate(['name' => 'Usuário Comum']);
-        $roleComum->givePermissionTo(['view-chamados', 'create-chamados']);
+        $roleComum->givePermissionTo(['view-chamados', 'create-chamados', 'close-chamados']);
 
         $roleEstagiario = Role::firstOrCreate(['name' => 'Estagiário']);
         $roleEstagiario->givePermissionTo(['view-ativos', 'create-ativos', 'edit-ativos',
