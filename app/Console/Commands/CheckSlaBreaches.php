@@ -31,7 +31,7 @@ class CheckSlaBreaches extends Command
 
             $now = Carbon::now();
             $chamado->data_inicio_sla = $now;
-            $chamado->prazo_sla = (clone $now)->addWeekdays(1); // Novo prazo de 1 dia útil
+            $chamado->prazo_sla = (clone $now)->addWeekdays(1); 
             $chamado->save();
 
             $logTexto = "SLA violado! O chamado estava atrasado em {$horasAtraso} horas. ";

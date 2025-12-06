@@ -14,7 +14,7 @@ class DepartamentoController extends Controller
      */
     public function index()
     {
-        // 'withCount' é um método eficiente para contar registros em relacionamentos
+       
         $departamentos = Departamento::withCount(['users'])
                         ->orderBy('nome')
                         ->paginate(10);

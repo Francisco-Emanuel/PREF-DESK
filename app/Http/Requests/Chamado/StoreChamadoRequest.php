@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Chamado;
 
+use App\Enums\PrioridadeSLA;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +29,7 @@ class StoreChamadoRequest extends FormRequest
             'descricao_problema' => 'required|string',
             'local' => 'required|string|max:255',
             'departamento_id' => 'required|exists:departamentos,id',
-            'prioridade' => 'required|string|max:50',
+            'prioridade' => ['required', Rule::enum(PrioridadeSLA::class)],
             'categoria_id' => 'nullable|exists:categorias,id',
             'solicitante_id' => [
             Rule::requiredIf(fn () => $user->hasAnyRole(['Admin', 'Supervisor', 'Técnico de TI'])),

@@ -8,7 +8,6 @@ class ResolveChamadoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // A autorização já é verificada no controller, mas podemos mantê-la aqui também
         return $this->user()->can('close-chamados');
     }
 

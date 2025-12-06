@@ -70,7 +70,7 @@
                 const canvasTecnico = document.getElementById('signature-pad-tecnico');
                 const canvasSolicitante = document.getElementById('signature-pad-solicitante');
 
-                // Função para inicializar um pad
+                
                 const initSignaturePad = (canvas) => {
                     if (canvas && !canvas.signaturePad) {
                         const signaturePad = new window.SignaturePad(canvas, {
@@ -83,7 +83,7 @@
                 initSignaturePad(canvasTecnico);
                 initSignaturePad(canvasSolicitante);
 
-                // Limpadores
+                
                 document.querySelector('[data-clear-for="tecnico"]').addEventListener('click', () => {
                     canvasTecnico.signaturePad.clear();
                 });
@@ -91,7 +91,6 @@
                     canvasSolicitante.signaturePad.clear();
                 });
 
-                // Submissão do formulário
                 document.getElementById('submit-resolve-form').addEventListener('click', () => {
 
 

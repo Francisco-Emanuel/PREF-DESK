@@ -41,12 +41,10 @@ class NotificationController extends Controller
         if ($notification) {
             $notification->markAsRead();
             
-            // Redireciona para a URL contida na notificação ou de volta para a lista.
             return redirect($notification->data['url'] ?? route('notifications.index'));
         }
 
         return back()->with('error', 'Notificação não encontrada.');
     }
     
-    // ... outros métodos da sua API podem continuar aqui, se necessário ...
 }

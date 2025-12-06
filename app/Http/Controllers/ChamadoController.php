@@ -58,7 +58,7 @@ class ChamadoController extends Controller
 
     public function addUpdate(AddUpdateRequest $request, Chamado $chamado)
     {
-        $this->chamadoService->criarLog($chamado, Auth::user(), 'OBS: ' . $request->validated()['texto'], false); // Nota: log de usuário
+        $this->chamadoService->criarLog($chamado, Auth::user(), 'OBS: ' . $request->validated()['texto'], false); 
         return redirect()->route('chamados.show', $chamado)->with('success', 'Sua atualização foi adicionada!');
     }
 
@@ -88,7 +88,7 @@ class ChamadoController extends Controller
 
     public function attend(Chamado $chamado)
     {
-        $this->authorize('edit-chamados'); // Usar uma Policy seria ainda melhor
+        $this->authorize('edit-chamados'); 
         if ($chamado->tecnico_id !== Auth::id()) {
             return back()->with('error', 'Você não é o técnico responsável por este chamado.');
         }
@@ -107,7 +107,7 @@ class ChamadoController extends Controller
 
     public function close(Chamado $chamado)
     {
-        $this->authorize('edit-chamados'); // Usar uma Policy seria ainda melhor
+        $this->authorize('edit-chamados'); 
         $this->chamadoService->fecharChamado($chamado, Auth::user());
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado fechado com sucesso!');
     }

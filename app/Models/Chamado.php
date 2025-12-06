@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ChamadoStatus;
+use App\Enums\PrioridadeSLA;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,7 @@ class Chamado extends Model
      */
     protected $casts = [
         'status' => ChamadoStatus::class,
+        'prioridade' => PrioridadeSLA::class,
         'data_resolucao' => 'datetime',
         'data_fechamento' => 'datetime',
         'prazo_sla' => 'datetime',
@@ -53,7 +55,7 @@ class Chamado extends Model
         'tecnico_id',
         'categoria_id',
         'departamento_id',
-        'assinatura_tecnico_path',       // Adicionar esta linha
+        'assinatura_tecnico_path',       
         'assinatura_solicitante_path',
     ];
 
@@ -69,7 +71,6 @@ class Chamado extends Model
 
         $query->where('status', '!=', ChamadoStatus::FECHADO);
 
-        // 2. LÓGICA CONDICIONAL: Aplica o filtro de 'Resolvido' APENAS se o usuário NÃO for Admin.
         $query->when(! $user->hasRole('Admin'), function (Builder $subQuery) use ($user) {
             $subQuery->where(function (Builder $groupQuery) use ($user) {
                 $groupQuery->where('status', '!=', ChamadoStatus::RESOLVIDO)

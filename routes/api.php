@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\NotificationController; // Importe o NotificationController
+use App\Http\Controllers\NotificationController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -16,15 +16,12 @@ use App\Http\Controllers\NotificationController; // Importe o NotificationContro
 |
 */
 
-// Rota padrão para obter detalhes do usuário autenticado via Sanctum
 Route::middleware('auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Rota para obter detalhes de um usuário específico via API (se ainda estiver em uso)
 Route::middleware('auth:sanctum')->get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
 
-// Rotas de API para Notificações (ADICIONE ESTE BLOCO)
 Route::middleware('auth')->group(function () {
 });
 

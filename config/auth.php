@@ -44,7 +44,7 @@ return [
         'driver' => 'sanctum',
         'provider' => 'users',
     ],
-    'sanctum' => [ // Certifique-se de que este bloco está correto
+    'sanctum' => [ 
         'driver' => 'sanctum',
         'provider' => 'users',
     ],
@@ -73,10 +73,7 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+       
     ],
 
     /*

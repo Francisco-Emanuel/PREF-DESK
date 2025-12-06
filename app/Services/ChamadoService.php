@@ -66,7 +66,7 @@ class ChamadoService
     public function atribuirParaSi(Chamado $chamado, User $tecnico): void
     {
         $chamado->tecnico_id = $tecnico->id;
-        $chamado->save(); // Salva antes de notificar
+        $chamado->save(); 
 
         $tecnico->notify(new ChamadoAtribuidoNotification($chamado, $tecnico));
 
@@ -79,7 +79,7 @@ class ChamadoService
     public function atenderChamado(Chamado $chamado, User $tecnico): void
     {
         $chamado->status = ChamadoStatus::EM_ANDAMENTO;
-        $this->startOrResetSla($chamado); // O save() já ocorre aqui
+        $this->startOrResetSla($chamado); 
         $this->criarLog($chamado, $tecnico, "Chamado em atendimento por {$tecnico->name}. O SLA foi iniciado.");
     }
 
@@ -178,13 +178,8 @@ class ChamadoService
     private function startOrResetSla(Chamado $chamado): void
     {
         $now = Carbon::now();
-        $chamado->data_inicio_sla = now(); // Usei now() para consistência
-        $chamado->prazo_sla = match ($chamado->prioridade) {
-            'Urgente' => (clone $now)->addWeekdays(1),
-            'Alta' => (clone $now)->addWeekdays(3),
-            'Média' => (clone $now)->addWeekdays(5),
-            default => (clone $now)->addWeekdays(10),
-        };
+        $chamado->data_inicio_sla = now(); 
+        $chamado->prazo_sla = $chamado->prioridade->calcularPrazo();
         $chamado->save();
     }
 
