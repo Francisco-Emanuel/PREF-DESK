@@ -120,11 +120,7 @@
                     {{ __('Chamados') }}
                 </x-responsive-nav-link>
             @endcan
-            @can('view-ativos')
-                <x-responsive-nav-link :href="route('ativos.index')" :active="request()->routeIs('ativos.*')">
-                    {{ __('Ativos') }}
-                </x-responsive-nav-link>
-            @endcan
+           
             @can('edit-departamentos')
                 <x-responsive-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
                     {{ __('Departamentos') }}

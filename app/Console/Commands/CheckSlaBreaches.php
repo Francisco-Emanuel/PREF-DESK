@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\PrioridadeSLA;
 use Illuminate\Console\Command;
 use App\Models\Chamado;
 use App\Models\AtualizacaoChamado;
 use App\Enums\ChamadoStatus;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class CheckSlaBreaches extends Command
@@ -15,38 +17,59 @@ class CheckSlaBreaches extends Command
 
     public function handle()
     {
+        Log::info('CheckSlaBreaches: Iniciando verificação de SLAs...');
         $this->info('Verificando chamados com SLA estourado...');
+        try {
+            $this->info('Verificando chamados com SLA estourado...');
 
-        $breachedChamados = Chamado::whereNotIn('status', [ChamadoStatus::RESOLVIDO, ChamadoStatus::FECHADO])
-                                ->whereNotNull('prazo_sla')
-                                ->where('prazo_sla', '<', now())
-                                ->where('prioridade', '!=', 'Urgente')
-                                ->get();
+            $breachedChamados = Chamado::whereNotIn('status', [ChamadoStatus::RESOLVIDO, ChamadoStatus::FECHADO])
+                ->whereNotNull('prazo_sla')
+                ->where('prazo_sla', '<', now())
+                ->where('prioridade', '!=', 'Urgente')
+                ->get();
 
-        foreach ($breachedChamados as $chamado) {
-            $prazoAntigo = $chamado->prazo_sla;
-            $horasAtraso = $prazoAntigo->diffInHours(now());
+            if ($breachedChamados->isEmpty()) {
+                Log::info('CheckSlaBreaches: Nenhum chamado violado encontrado.');
+                return;
+            }
 
-            $chamado->prioridade = 'Urgente';
+            foreach ($breachedChamados as $chamado) {
+                Log::warning('CheckSlaBreaches: SLA Violado detectado', [
+                    'chamado_id' => $chamado->id,
+                    'prazo_original' => $chamado->prazo_sla,
+                    'atraso_em_horas' => $chamado->prazo_sla->diffInHours(now())
+                ]);
 
-            $now = Carbon::now();
-            $chamado->data_inicio_sla = $now;
-            $chamado->prazo_sla = (clone $now)->addWeekdays(1); 
-            $chamado->save();
+                $prazoAntigo = $chamado->prazo_sla;
+                $horasAtraso = $prazoAntigo->diffInHours(now());
 
-            $logTexto = "SLA violado! O chamado estava atrasado em {$horasAtraso} horas. ";
-            $logTexto .= "A prioridade foi elevada para Urgente e um novo prazo de resolução foi definido.";
+                $chamado->prioridade = PrioridadeSLA::URGENTE;
 
-            AtualizacaoChamado::create([
-                'chamado_id' => $chamado->id,
-                'autor_id' => 1, 
-                'texto' => $logTexto,
-                'is_system_log' => true,
+                $now = Carbon::now();
+                $chamado->data_inicio_sla = $now;
+                $chamado->prazo_sla = (clone $now)->addWeekdays(1);
+                $chamado->save();
+
+                $logTexto = "SLA violado! O chamado estava atrasado em {$horasAtraso} horas. ";
+                $logTexto .= "A prioridade foi elevada para Urgente e um novo prazo de resolução foi definido.";
+
+                AtualizacaoChamado::create([
+                    'chamado_id' => $chamado->id,
+                    'autor_id' => 1,
+                    'texto' => $logTexto,
+                    'is_system_log' => true,
+                ]);
+
+                $this->warn("Chamado #{$chamado->id} teve a prioridade elevada para Urgente.");
+            }
+            Log::info("CheckSlaBreaches: Finalizado com sucesso. " . count($breachedChamados) . " chamados processados.");
+            $this->info('Verificação concluída.');
+        } catch (\Exception $e) {
+            Log::error('CheckSlaBreaches: Falha crítica na execução', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-
-            $this->warn("Chamado #{$chamado->id} teve a prioridade elevada para Urgente.");
+            $this->error('Ocorreu um erro ao verificar SLAs. Verifique os logs.');
         }
-
-        $this->info('Verificação concluída.');
     }
 }

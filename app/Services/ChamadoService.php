@@ -11,6 +11,8 @@ use App\Notifications\ChamadoAtribuidoNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 
 class ChamadoService
 {
@@ -55,7 +57,15 @@ class ChamadoService
         $chamado->tecnico_id = $novoTecnico->id;
         $chamado->save();
 
-        $novoTecnico->notify(new ChamadoAtribuidoNotification($chamado, $autor));
+        try {
+            $novoTecnico->notify(new ChamadoAtribuidoNotification($chamado, $autor));
+        } catch (\Exception $e) {
+            Log::error('ChamadoService: Falha ao enviar notificação de atribuição', [
+                'chamado_id' => $chamado->id,
+                'tecnico_id' => $novoTecnico->id,
+                'erro' => $e->getMessage()
+            ]);
+        }
 
         $this->criarLog($chamado, $autor, $logTexto);
     }
@@ -66,7 +76,7 @@ class ChamadoService
     public function atribuirParaSi(Chamado $chamado, User $tecnico): void
     {
         $chamado->tecnico_id = $tecnico->id;
-        $chamado->save(); 
+        $chamado->save();
 
         $tecnico->notify(new ChamadoAtribuidoNotification($chamado, $tecnico));
 
@@ -79,7 +89,7 @@ class ChamadoService
     public function atenderChamado(Chamado $chamado, User $tecnico): void
     {
         $chamado->status = ChamadoStatus::EM_ANDAMENTO;
-        $this->startOrResetSla($chamado); 
+        $this->startOrResetSla($chamado);
         $this->criarLog($chamado, $tecnico, "Chamado em atendimento por {$tecnico->name}. O SLA foi iniciado.");
     }
 
@@ -178,7 +188,7 @@ class ChamadoService
     private function startOrResetSla(Chamado $chamado): void
     {
         $now = Carbon::now();
-        $chamado->data_inicio_sla = now(); 
+        $chamado->data_inicio_sla = now();
         $chamado->prazo_sla = $chamado->prioridade->calcularPrazo();
         $chamado->save();
     }
