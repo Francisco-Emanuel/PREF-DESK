@@ -26,10 +26,9 @@ O projeto segue uma arquitetura em camadas (Service Layer) para manter os Contro
 ### 💎 Destaques Técnicos
 
 * **SLA Dinâmico via Enums:** A lógica de cálculo de prazos foi encapsulada em PHP Enums (`PrioridadeSLA`), tornando o código type-safe e desacoplado dos Services.
-* **Service Pattern:** Toda a lógica de manipulação de chamados reside em `ChamadoService`, facilitando a manutenção.
+* **Service Pattern:** Toda a lógica de manipulação de chamados reside em `ChamadoService`, facilitando a manutenção e testes.
 * **Developer Experience (DX):** Uso de `Makefile` para abstrair comandos complexos do Docker. O ambiente roda com um único comando.
 * **Observabilidade:** Logs estruturados para monitoramento de falhas críticas e violações de SLA via Schedule.
-
 ---
 
 ## 🛠️ Como Rodar o Projeto
@@ -40,3 +39,5 @@ Pré-requisitos: Ter o **Docker** e o **Git** instalados.
 ```bash
 git clone [https://github.com/Francisco-Emanuel/PREF-DESK.git](https://github.com/Francisco-Emanuel/PREF-DESK.git)
 cd PREF-DESK
+
+!!🛠️🛠️🛠️🛠️🛠️🛠️🛠️!!
