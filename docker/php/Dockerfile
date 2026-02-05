@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libicu-dev \
     zip \
     unzip \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
@@ -24,7 +25,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 2. Instala extensões do PHP
 # Adicionamos 'zip' na lista
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install pdo pdo_mysql intl mbstring exif pcntl bcmath gd zip
 
 # Obtém o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
