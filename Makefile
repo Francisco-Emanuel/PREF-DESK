@@ -9,12 +9,12 @@ down:
 	./vendor/bin/sail down || docker compose down
 
 setup:
+	@echo "Copiando .env..."
+	cp .env.example .env || true
 	@echo "Construindo containers..."
 	docker compose up -d --build
 	@echo "Instalando dependências do PHP..."
 	docker compose exec app composer install
-	@echo "Copiando .env..."
-	cp .env.example .env || true
 	@echo "Gerando chave..."
 	docker compose exec app php artisan key:generate
 	@echo "Instalando dependências do Node..."
